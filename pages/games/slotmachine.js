@@ -42,10 +42,6 @@ export default function SlotMachineGame() {
 
     if (res.ok) {
       setResult(data);
-      
-      setTimeout(() => {
-        router.reload();
-      }, 3000);
     } else {
       setError(data.error || "An error occurred.");
     }
@@ -61,7 +57,7 @@ export default function SlotMachineGame() {
           <h3>Lošimo automatas</h3>
         </Card.Header>
         <Card.Body>
-          <p><strong>Turimi kreditai:</strong> {session?.user?.credits}</p>
+          
 
 
           <div style={{ marginBottom: '20px' }}>

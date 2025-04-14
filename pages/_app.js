@@ -15,7 +15,7 @@ function AppNavbar() {
         </Link>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-
+          {/* Left side navigation */}
           <Nav className="me-auto">
             <Link href="/credits" passHref legacyBehavior>
               <Nav.Link>Pirkti Kreditu</Nav.Link>
@@ -24,11 +24,13 @@ function AppNavbar() {
               <Link href="/games/coinflip" passHref legacyBehavior>
                 <NavDropdown.Item>Monetos Metimas</NavDropdown.Item>
               </Link>
-              
+              <Link href="/games/slotmachine" passHref legacyBehavior>
+                <NavDropdown.Item>Lošimo automatas</NavDropdown.Item>
+              </Link>
             </NavDropdown>
           </Nav>
 
-
+          {/* Right side navigation */}
           <Nav className="ms-auto">
             {!session && (
               <>

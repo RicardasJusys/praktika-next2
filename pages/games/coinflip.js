@@ -19,7 +19,7 @@ export default function CoinFlipGame() {
     if (status === 'unauthenticated') router.push('/login');
   }, [status, router]);
 
-  const handleFlip = async () => {
+  const playGame = async () => {
     setLoading(true);
     setError('');
     setResult(null);

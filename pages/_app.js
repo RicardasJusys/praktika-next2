@@ -20,16 +20,19 @@ function AppNavbar() {
           {/* Left side navigation */}
           <Nav className="me-auto">
             <Link href="/credits" passHref legacyBehavior>
-              <Nav.Link>Pirkti Kreditu</Nav.Link>
+              <Nav.Link>Pirkti Kreditų</Nav.Link>
             </Link>
             <NavDropdown title="Žaidimai" id="games-dropdown">
               <Link href="/games/coinflip" passHref legacyBehavior>
                 <NavDropdown.Item>Monetos Metimas</NavDropdown.Item>
               </Link>
               <Link href="/games/slotmachine" passHref legacyBehavior>
-                <NavDropdown.Item>Lošimo automatas</NavDropdown.Item>
+                <NavDropdown.Item>Lošimo Automatas</NavDropdown.Item>
               </Link>
             </NavDropdown>
+            <Link href="/scrape" passHref legacyBehavior>
+              <Nav.Link>Scrape Paslauga</Nav.Link>
+            </Link>
           </Nav>
 
           {/* Right side navigation */}

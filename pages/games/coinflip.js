@@ -4,16 +4,16 @@ import { useRouter } from 'next/router';
 import { Container, Card, Button, Form, Alert, Row, Col } from 'react-bootstrap';
 
 export default function CoinFlipGame() {
-  const { data: session, status } = useSession();
+  const { data: session, status, refetch } = useSession(); // ← pull in refetch
   const router = useRouter();
 
   const [bet, setBet] = useState('');
-  const [choice, setChoice] = useState('skaicius'); // default choice; adjust if needed
+  const [choice, setChoice] = useState('skaicius');
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Redirect to login if user is not authenticated
+  // Redirect if not signed in
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
@@ -25,7 +25,7 @@ export default function CoinFlipGame() {
     setError("");
     setResult(null);
 
-    const parsedBet = parseInt(bet);
+    const parsedBet = parseInt(bet, 10);
     if (!parsedBet || parsedBet <= 0) {
       setError("Please enter a valid bet amount.");
       setLoading(false);
@@ -43,13 +43,18 @@ export default function CoinFlipGame() {
 
     if (res.ok) {
       setResult(data);
+      // immediately re-fetch the NextAuth session so navbar credits update
+      if (typeof refetch === 'function') {
+        await refetch();
+      }
     } else {
       setError(data.error || "An error occurred.");
     }
   };
 
-  if (status === "loading")
+  if (status === "loading") {
     return <p style={{ padding: "2rem" }}>Loading...</p>;
+  }
 
   return (
     <Container className="mt-5">
@@ -58,9 +63,8 @@ export default function CoinFlipGame() {
           <h3>Monetos Metimo Žaidimas</h3>
         </Card.Header>
         <Card.Body>
-         
-
           {error && <Alert variant="danger">{error}</Alert>}
+
           {result && (
             <Alert variant={result.win ? "success" : "warning"}>
               {result.win ? "🎉 Laimėjote!" : "😢 Pralaimėjote..."}
@@ -72,8 +76,8 @@ export default function CoinFlipGame() {
           <Form>
             <Form.Group className="mb-3">
               <Form.Label>Įveskite statymo sumą</Form.Label>
-              <Form.Control 
-                type="number" 
+              <Form.Control
+                type="number"
                 min="1"
                 value={bet}
                 onChange={(e) => setBet(e.target.value)}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession, signIn } from 'next-auth/react'
 import { useRouter } from 'next/router';
 import { Container, Card, Button, Form, Alert, Row, Col } from 'react-bootstrap';
 
@@ -41,10 +41,8 @@ export default function CoinFlipGame() {
 
     if (res.ok) {
       setResult(data);
-      // **Re-fetch the session** so navbar credits update instantly
-      if (typeof refetch === 'function') {
-        await refetch();
-      }
+      // Fallback: refresh the NextAuth session so navbar credits update
+      await signIn(undefined, { redirect: false });
     } else {
       setError(data.error || "An error occurred.");
     }

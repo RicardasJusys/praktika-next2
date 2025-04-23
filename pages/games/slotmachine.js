@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession, signIn } from 'next-auth/react';  // ← import signIn
 import { useRouter } from 'next/router';
 import { Container, Card, Button, Form, Alert } from 'react-bootstrap';
 
 export default function SlotMachineGame() {
-  // 1) Destructure refetch from useSession
-  const { data: session, status, refetch } = useSession();
+  const { data: session, status } = useSession(); // no refetch here
   const router = useRouter();
 
   const [bet, setBet] = useState('');
@@ -36,15 +35,14 @@ export default function SlotMachineGame() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ bet: parsedBet })
     });
+
     const data = await res.json();
     setLoading(false);
 
     if (res.ok) {
       setResult(data);
-      // 2) After setting the result, re-fetch session so navbar credits update
-      if (typeof refetch === 'function') {
-        await refetch();
-      }
+      // Fallback: refresh the NextAuth session so navbar credits update
+      await signIn(undefined, { redirect: false });
     } else {
       setError(data.error || "An error occurred.");
     }
@@ -59,7 +57,7 @@ export default function SlotMachineGame() {
       <Card>
         <Card.Header><h3>Lošimo automatas</h3></Card.Header>
         <Card.Body>
-          <div style={{ marginBottom: '20px' }}>
+        <div style={{ marginBottom: '20px' }}>
             <h5 style={{ textAlign: 'center' }}>Laimėjimų taisyklės</h5>
             <div style={{
               display: 'flex',
@@ -137,7 +135,7 @@ export default function SlotMachineGame() {
 
           <Form.Group className="mb-3">
             <Form.Label>Įveskite statymo sumą</Form.Label>
-            <Form.Control 
+            <Form.Control
               type="number"
               min="1"
               value={bet}

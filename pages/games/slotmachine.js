@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useSession, signIn } from 'next-auth/react';  // ← import signIn
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { Container, Card, Button, Form, Alert } from 'react-bootstrap';
+import { useCredits } from '@/contexts/CreditsContext';
 
 export default function SlotMachineGame() {
-  const { data: session, status } = useSession(); // no refetch here
+  const { data: session, status } = useSession();
   const router = useRouter();
+  const { setCredits } = useCredits();           // ← grab setter
 
   const [bet, setBet] = useState('');
   const [result, setResult] = useState(null);
@@ -41,10 +43,9 @@ export default function SlotMachineGame() {
 
     if (res.ok) {
       setResult(data);
-      // Fallback: refresh the NextAuth session so navbar credits update
-      await signIn(undefined, { redirect: false });
+      setCredits(data.updatedCredits);  // ← update context immediately
     } else {
-      setError(data.error || "An error occurred.");
+      setError(data.error || 'An error occurred.');
     }
   };
 

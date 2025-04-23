@@ -3,9 +3,11 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { SessionProvider, useSession, signOut } from 'next-auth/react';
 import { Navbar, Nav, NavDropdown, Container } from 'react-bootstrap';
+import { CreditsProvider, useCredits } from '@/contexts/CreditsContext';
 
 function AppNavbar() {
   const { data: session } = useSession();
+  const { credits } = useCredits();
 
   return (
     <Navbar bg="light" expand="lg">
@@ -45,7 +47,7 @@ function AppNavbar() {
             {session && (
               <>
                 <Navbar.Text className="me-3">
-                  Kreditai: <span className="fw-bold">{session.user.credits || 0}</span>
+                  Kreditai: <span className="fw-bold">{credits}</span>
                 </Navbar.Text>
                 <NavDropdown title={session.user.name || "Profilis"} id="profile-dropdown">
                   <Link href="/profile" passHref legacyBehavior>
@@ -68,11 +70,13 @@ function AppNavbar() {
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
     <SessionProvider session={session}>
-      <Head>
-        <title>Praktika</title>
-      </Head>
-      <AppNavbar />
-      <Component {...pageProps} />
+      <CreditsProvider>
+        <Head>
+          <title>Praktika</title>
+        </Head>
+        <AppNavbar />
+        <Component {...pageProps} />
+      </CreditsProvider>
     </SessionProvider>
   );
 }

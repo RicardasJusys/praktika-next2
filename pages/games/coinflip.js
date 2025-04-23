@@ -1,55 +1,54 @@
 import { useState, useEffect } from 'react';
-import { useSession, signIn } from 'next-auth/react'
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { Container, Card, Button, Form, Alert, Row, Col } from 'react-bootstrap';
+import { useCredits } from '@/contexts/CreditsContext';
 
 export default function CoinFlipGame() {
-  // Pull in refetch along with session data & status
-  const { data: session, status, refetch } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
+  const { setCredits } = useCredits();  // ← grab setter
 
   const [bet, setBet] = useState('');
   const [choice, setChoice] = useState('skaicius');
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
-  // Redirect if not logged in
   useEffect(() => {
-    if (status === "unauthenticated") router.push("/login");
+    if (status === 'unauthenticated') router.push('/login');
   }, [status, router]);
 
-  const playGame = async () => {
+  const handleFlip = async () => {
     setLoading(true);
-    setError("");
+    setError('');
     setResult(null);
 
     const parsedBet = parseInt(bet, 10);
     if (!parsedBet || parsedBet <= 0) {
-      setError("Please enter a valid bet amount.");
+      setError('Please enter a valid bet amount.');
       setLoading(false);
       return;
     }
 
     const res = await fetch('/api/games/coinflip', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ bet: parsedBet, choice }),
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ bet: parsedBet, choice })
     });
     const data = await res.json();
     setLoading(false);
 
     if (res.ok) {
       setResult(data);
-      // Fallback: refresh the NextAuth session so navbar credits update
-      await signIn(undefined, { redirect: false });
+      setCredits(data.updatedCredits);  // ← update context immediately
     } else {
-      setError(data.error || "An error occurred.");
+      setError(data.error || 'An error occurred.');
     }
   };
 
-  if (status === "loading") {
-    return <p style={{ padding: "2rem" }}>Loading...</p>;
+  if (status === 'loading') {
+    return <p style={{ padding: '2rem' }}>Loading...</p>;
   }
 
   return (

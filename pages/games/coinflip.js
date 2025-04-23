@@ -4,7 +4,8 @@ import { useRouter } from 'next/router';
 import { Container, Card, Button, Form, Alert, Row, Col } from 'react-bootstrap';
 
 export default function CoinFlipGame() {
-  const { data: session, status, refetch } = useSession(); // ← pull in refetch
+  // Pull in refetch along with session data & status
+  const { data: session, status, refetch } = useSession();
   const router = useRouter();
 
   const [bet, setBet] = useState('');
@@ -13,11 +14,9 @@ export default function CoinFlipGame() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Redirect if not signed in
+  // Redirect if not logged in
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/login");
-    }
+    if (status === "unauthenticated") router.push("/login");
   }, [status, router]);
 
   const playGame = async () => {
@@ -37,13 +36,12 @@ export default function CoinFlipGame() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ bet: parsedBet, choice }),
     });
-
     const data = await res.json();
     setLoading(false);
 
     if (res.ok) {
       setResult(data);
-      // immediately re-fetch the NextAuth session so navbar credits update
+      // **Re-fetch the session** so navbar credits update instantly
       if (typeof refetch === 'function') {
         await refetch();
       }

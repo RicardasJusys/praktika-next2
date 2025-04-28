@@ -27,9 +27,13 @@ export default async function handler(req, res) {
 
 
   user.credits -= article.price;
-  article.buyers.push(user._id);
   await user.save();
-  await article.save();
+  await Article.updateOne(
+       { _id: article._id },
+      { $push: { buyers: user._id } }
+     );
+
+
 
   return res.status(200).json({ remainingCredits: user.credits });
 }

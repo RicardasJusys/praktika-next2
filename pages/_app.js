@@ -30,6 +30,16 @@ function AppNavbar() {
                 <NavDropdown.Item>Lošimo Automatas</NavDropdown.Item>
               </Link>
             </NavDropdown>
+            <NavDropdown title="Straipsniai" id="articles-dropdown">
+          <Link href="/articles" passHref legacyBehavior>
+            <NavDropdown.Item>Visi Straipsniai</NavDropdown.Item>
+          </Link>
+          {session && (session.user.role === 'admin' || session.user.role === 'user') && (
+            <Link href="/articles/new" passHref legacyBehavior>
+              <NavDropdown.Item>Kurti Straipsnį</NavDropdown.Item>
+            </Link>
+          )}
+        </NavDropdown>
             <Link href="/scrape" passHref legacyBehavior>
               <Nav.Link>Scrape Paslauga</Nav.Link>
             </Link>

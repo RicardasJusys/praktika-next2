@@ -10,6 +10,7 @@
     "bcrypt": "^5.1.1",
     "bootstrap": "^5.3.5",
     "cheerio": "^1.0.0",
+    "formidable": "^3.5.4",
     "mongodb": "^6.15.0",
     "mongoose": "^7.0.2",
     "next": "latest",
